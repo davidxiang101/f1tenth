@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
 
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Set up environment variables for ROS
 ENV ROS_DISTRO melodic
 
@@ -13,8 +16,12 @@ RUN apt-get update && apt-get install -y ros-melodic-desktop-full && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Initialize rosdep
-RUN rosdep init && rosdep update
+RUN apt-get update && apt-get install -y python-rosdep && \
+    rosdep init && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Update rosdep
+RUN rosdep update
 
 # Set up ROS environment
 RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-
