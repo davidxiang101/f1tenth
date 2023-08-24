@@ -1,0 +1,7 @@
+xhost + $(hostname)
+
+IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
+
+echo $IP
+
+docker run -it --name ros-melodic-container -e DISPLAY=$IP:0 ros-melodic-image bash
